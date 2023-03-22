@@ -1,5 +1,6 @@
 import { WebDFU } from "https://code4fukui.github.io/webdfu/WebDFU.js";
 import { unzip } from "https://taisukef.github.io/zlib.js/es/unzip.js";
+import { downloadTextFile } from "https://code4sabae.github.io/js/downloadTextFile.js";
 
 const url = "./firmware.zip";
 const zip = new Uint8Array(await (await fetch(url)).arrayBuffer());
@@ -11,6 +12,18 @@ const meta = JSON.parse(new TextDecoder().decode(zips.decompress("firmware.metad
 console.log(meta);
 divinfo.innerHTML = JSON.stringify(meta, null, 2).replace(/ /g, "&nbsp;").split("\n").join("<br>");
 const firmwareFile = zips.decompress("firmware-base.bin")
+const readme = zips.decompress("ReadMe_OSS.txt");
+alink.textContent = "ReadMe_OSS.txt";
+alink.style.textDecoration = "underline";
+alink.style.cursor = "pointer";
+alink.style.color = "blue";
+alink.onclick = (e) => {
+  downloadTextFile({
+    name: "ReadMe_OSS.txt",
+    data: readme,
+  });
+  e.preventDefault();
+};
 
 const showProgress = (span, s, n, len) => {
   span.textContent = `${s}: ${(n / len * 100).toFixed(1)}% (${n} / ${len}byte)`;
